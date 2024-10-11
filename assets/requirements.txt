@@ -1,4 +1,4 @@
 PyQt5==5.15.9
 cefpython3
-setuptools==68.0.0
+setuptools==70.0.0
 wheel==0.40.0
