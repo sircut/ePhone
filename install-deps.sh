@@ -4,5 +4,5 @@
 # https://opensource.org/licenses/MIT
 
 # Install critical dependencies
-pip3 install -r assets/requirements.txt
+pip install -r assets/requirements.txt
 sudo apt install -y python3-dev libgl1-mesa-dev
