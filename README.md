@@ -1,7 +1,7 @@
-# ePhone-GUI
+# The ePhone Project
 
 ## Description
-ePhone-GUI is a Python-based graphical user interface designed for the Raspberry Pi Zero 2 W running 64-bit Raspberry Pi OS. This project transforms the Pi into a customizable phone-like device with a touchscreen interface, offering features like WiFi management, system settings, and more.
+The ePhone is a side project of mine, it runs of the speedy Raspberry Pi Zero 2W with a battery pack and a capacitive touch-screen. It's like a mini PC!
 
 ## Features
 - Fullscreen GUI optimized for Raspberry Pi touchscreen displays
