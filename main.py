@@ -10,10 +10,10 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushBut
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal, QUrl
 from PyQt5.QtGui import QColor, QFont, QFontDatabase, QKeySequence
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QShortcut
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from services.SetupService import SetupService
 from wizards.SetupWizard import run_setup_wizard
 from services.WifiService import WifiService, SimulatedWifiService
-from cefpython3 import cefpython as cef
 import ctypes
 
 class MainWindow(QWidget):
@@ -42,23 +42,22 @@ class MainWindow(QWidget):
         if font_id == -1:
             print("Failed to load Press Start 2P font")
         
-        # Adjust font size based on platform
-        self.pixel_font = QFont("Press Start 2P", 6 if self.is_raspberry_pi else 10)
+        self.pixel_font = QFont("Press Start 2P", 10)  # Adjust font size as needed
 
         self.setWindowTitle('ePhone GUI')
-        self.setStyleSheet("background-color: white;")
+        self.setStyleSheet("background-color: #2E2E2E; color: #FFFFFF;")  # Dark background with white text
         
         # Set window to full screen
         self.showFullScreen()
 
         main_layout = QHBoxLayout()
-        main_layout.setSpacing(5 if self.is_raspberry_pi else 10)
-        main_layout.setContentsMargins(5, 5, 5, 5) if self.is_raspberry_pi else main_layout.setContentsMargins(10, 10, 10, 10)
+        main_layout.setSpacing(10)
+        main_layout.setContentsMargins(10, 10, 10, 10)
         self.setLayout(main_layout)
 
         # Navigation bar
         nav_bar = QVBoxLayout()
-        nav_bar.setSpacing(3 if self.is_raspberry_pi else 5)
+        nav_bar.setSpacing(10)
         nav_bar.setContentsMargins(0, 0, 0, 0)
 
         # Add buttons to the navigation bar
@@ -80,7 +79,7 @@ class MainWindow(QWidget):
         # Add a vertical line as a separator
         separator = QWidget()
         separator.setFixedWidth(1)
-        separator.setStyleSheet("background-color: #CCCCCC;")
+        separator.setStyleSheet("background-color: #444444;")  # Darker separator
         main_layout.addWidget(separator)
 
         # Content area
@@ -111,7 +110,7 @@ class MainWindow(QWidget):
 
     def switch_page(self, index):
         if index == 0:  # HOME button
-            self.content_area.setCurrentIndex(1)  # Set to WIFI page
+            self.content_area.setCurrentIndex(0)  # Set to HOME page (index 0)
         else:
             self.content_area.setCurrentIndex(index)
 
@@ -129,26 +128,23 @@ class MainWindow(QWidget):
     def update_button_style(self, button):
         style = """
             QPushButton {
-                background-color: %s;
-                color: #FFFFFF;
-                border: none;
-                border-radius: 3px;
-                padding: 5px;
-                font-size: %dpx;
+                background-color: #3A3A3A;  /* Dark button background */
+                color: #FFFFFF;  /* White text */
+                border: 2px solid #007BFF;  /* Blue border */
+                border-radius: 8px;  /* Rounded corners */
+                padding: 10px;  /* Padding for better touch targets */
+                font-size: 12px;  /* Font size */
                 font-weight: bold;
             }
             QPushButton:hover {
-                background-color: %s;
+                background-color: #4A4A4A;  /* Lighter on hover */
+                border-color: #0056b3;  /* Darker blue on hover */
             }
             QPushButton:pressed {
-                background-color: %s;
+                background-color: #222222;  /* Darker when pressed */
+                border-color: #003d80;  /* Even darker blue when pressed */
             }
-        """ % (
-            '#444444' if self.dark_mode else '#333333',
-            8 if self.is_raspberry_pi else 12,
-            '#555555' if self.dark_mode else '#444444',
-            '#222222' if self.dark_mode else '#111111'
-        )
+        """
         button.setStyleSheet(style)
 
     def add_shadow_effect(self, widget):
@@ -274,17 +270,12 @@ class MainWindow(QWidget):
 
         layout.addLayout(url_layout)
 
-        # CEF browser widget
-        self.browser_widget = QWidget()
-        layout.addWidget(self.browser_widget)
+        # QWebEngineView widget
+        self.web_view = QWebEngineView()
+        layout.addWidget(self.web_view)
 
-        # Initialize CEF
-        cef.Initialize()
-        window_info = cef.WindowInfo()
-        rect = self.browser_widget.geometry()
-        window_info.SetAsChild(int(self.winId()), 
-                               [rect.left(), rect.top(), rect.width(), rect.height()])
-        self.browser = cef.CreateBrowserSync(window_info, url="https://www.google.com")
+        # Load initial URL
+        self.web_view.setUrl(QUrl("https://www.google.com"))
 
         # Connect Go button to load URL
         go_button.clicked.connect(lambda: self.load_url(url_input.text()))
@@ -294,7 +285,7 @@ class MainWindow(QWidget):
     def load_url(self, url):
         if not url.startswith('http://') and not url.startswith('https://'):
             url = 'https://' + url
-        self.browser.LoadUrl(url)
+        self.web_view.setUrl(QUrl(url))
 
     def add_settings_page(self):
         settings_page = QWidget()
@@ -332,7 +323,7 @@ class MainWindow(QWidget):
 
     def update_styles(self):
         # Update main window background
-        self.setStyleSheet(f"background-color: {'#222222' if self.dark_mode else 'white'}; color: {'#FFFFFF' if self.dark_mode else '#000000'};")
+        self.setStyleSheet(f"background-color: {'#2E2E2E' if self.dark_mode else 'white'}; color: {'#FFFFFF' if self.dark_mode else '#000000'};")
         
         # Update all buttons
         for button in self.findChildren(QPushButton):
@@ -341,9 +332,10 @@ class MainWindow(QWidget):
         # Update QListWidget (network list) style
         self.network_list.setStyleSheet(f"""
             QListWidget {{
-                background-color: {'#333333' if self.dark_mode else '#FFFFFF'};
+                background-color: {'#3A3A3A' if self.dark_mode else '#FFFFFF'};
                 color: {'#FFFFFF' if self.dark_mode else '#000000'};
-                border: 1px solid {'#444444' if self.dark_mode else '#CCCCCC'};
+                border: 1px solid {'#007BFF' if self.dark_mode else '#CCCCCC'};
+                border-radius: 5px;  /* Rounded corners */
             }}
             QListWidget::item:selected {{
                 background-color: {'#555555' if self.dark_mode else '#DDDDDD'};
@@ -357,8 +349,6 @@ class MainWindow(QWidget):
     def update_dark_mode_button_text(self, is_dark_mode):
         self.dark_mode_button.setText("Light Mode" if is_dark_mode else "Dark Mode")
         self.update_button_style(self.dark_mode_button)
-
-
 
     def quit_application(self):
         QApplication.quit()
@@ -402,10 +392,6 @@ if __name__ == '__main__':
     window = MainWindow(dev_mode=args.dev_mode)
     window.show()
     
-    # Start the CEF message loop
-    cef.MessageLoop()
-    
-    # Clean up CEF
-    del window.browser
+
     
     sys.exit(app.exec_())
