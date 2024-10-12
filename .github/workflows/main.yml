@@ -35,7 +35,7 @@ jobs:
           tar -cvf application.tar.gz -C package .  # Create a tar package
 
       - name: Upload package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3  # Updated to the latest version
         with:
           name: application-package
           path: application.tar.gz
@@ -48,7 +48,7 @@ jobs:
           git push origin $TAG_NAME
 
       - name: Create a release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v1  # Ensure this is the latest version
         with:
           tag: ${{ steps.create_tag.outputs.tag_name }}
           files: application.tar.gz
