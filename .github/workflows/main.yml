@@ -23,9 +23,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install PyQt5 PyQtWebEngine  # Install your dependencies
 
+      - name: Install Xvfb
+        run: sudo apt-get install -y xvfb  # Install Xvfb
+
       - name: Run Application
         run: |
           mkdir -p tests  # Create tests directory if it doesn't exist
+          Xvfb :99 -screen 0 1024x768x24 &  # Start Xvfb in the background
+          export DISPLAY=:99  # Set the DISPLAY environment variable
           python main.py > tests/output.log 2>&1  # Run the application and capture output and errors
 
       - name: Package application
