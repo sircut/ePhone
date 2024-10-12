@@ -85,7 +85,7 @@ To have ePhone-GUI start automatically when your Raspberry Pi boots:
 ## Development
 To run the application in development mode with additional debugging features:
 ```
-python3 main.py --dev-interface
+python3 main.py --dev-mode
 ```
 
 ## Contributing
