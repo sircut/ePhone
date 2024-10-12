@@ -1,7 +1,7 @@
-# ePhone-GUI
+# The ePhone Project
 
 ## Description
-ePhone-GUI is a Python-based graphical user interface designed for the Raspberry Pi Zero 2 W running 64-bit Raspberry Pi OS. This project transforms the Pi into a customizable phone-like device with a touchscreen interface, offering features like WiFi management, system settings, and more.
+The ePhone is a side project of mine, it runs of the speedy Raspberry Pi Zero 2W with a battery pack and a capacitive touch-screen. It's like a mini PC!
 
 ## Features
 - Fullscreen GUI optimized for Raspberry Pi touchscreen displays
@@ -73,17 +73,14 @@ ePhone-GUI is a Python-based graphical user interface designed for the Raspberry
 ## Auto-start on Boot
 To have ePhone-GUI start automatically when your Raspberry Pi boots:
 
-1. Edit the autostart file:
+1. Make "scripts/miron.sh" executable
    ```
-   sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+   chmod +x scripts/miron.sh
    ```
-
-2. Add this line at the end of the file:
+2. Execute the script as following:
    ```
-   @/usr/bin/python3 /home/pi/ePhone-GUI/main.py
+   ./scripts/miron.sh main.py
    ```
-
-3. Save and exit (Ctrl+X, then Y, then Enter)
 
 ## Development
 To run the application in development mode with additional debugging features:
