@@ -1,5 +1,5 @@
-PyQt5==5.15.9
-pyqt5-keyboard 
+PyQt5
+PyQtWebEngine
+# Change setuptools to 70.0.0 for security (CVE-2024-6345)
 setuptools==70.0.0
 wheel==0.40.0
-PyQtWebEngine==5.15.9
